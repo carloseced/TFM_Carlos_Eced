@@ -21,9 +21,7 @@ library(sjPlot)
 
 ## Anotaciones antes de empezar
 #1. Las variables respuesta (riqueza) son DISCRETAS -> usar familia poisson
-
 #2. Alguna fila que tengamos que quitar? Los pixeles/puntos proximos a la costa pueden tener 0s porque los raster no tenian datos ahi
-
 #3. Elimino datos donde no hay litologia
 
 
@@ -42,18 +40,14 @@ data_filtered$LITO_RECL3 <- as.factor(data_filtered$LITO_RECL3)
 
 str(data_filtered)
 
-
 # Cambiar los niveles de la variable LITO_RECL3
 levels(data_filtered$LITO_RECL3) <- c("Areniscas", "Calizas", "Cuarcitas", "Granitos", "Serpentinas", "Vulcanitas")
 # Verificar los cambios
 levels(data_filtered$LITO_RECL3)
 print(levels(data_filtered$LITO_RECL3))
 
-
 #Defino la categoria de referencia para la litologia
 data_filtered$LITO_RECL3 <- relevel(data_filtered$LITO_RECL3, ref = "Areniscas")
-
-
 
 
 
@@ -79,6 +73,9 @@ glm_2           <- glm(Riqueza_GB ~ X1 + X2 + X6 + X7 + X13 + X18 + LITO_RECL3,
                        data=data_filtered, family=poisson(link="log"))
 
 summary(glm_2)
+
+# Seleccion de modelos segun criterio de AIC
+step_glm2 <- stepAIC(glm_2, direction = "both")
 
 ## SELECCION DE MODELOS
 options(na.action = "na.fail") # evita errores
@@ -112,13 +109,16 @@ glm_sp           <- glm(Riqueza_sp ~ X1 + X2 + X6 + X7 + X13 + X18 + LITO_RECL3,
                        contrasts=list(LITO_RECL3=contr.sum),
                        data=data_filtered, family=poisson(link="log"))
 
+# Seleccion de modelos segun criterio de AIC
+step_glm_sp <- stepAIC(glm_sp, direction = "both")
+
 ## SELECCION DE MODELOS
 options(na.action = "na.fail") # evita errores
 
 ms_glm_sp           <- dredge(glm_sp, extra = "adjR^2", rank = "AICc")
 ms_glm_sp
 
-# Crear una tabla de resumen del modelo con sjPlot
+# Crear una tabla de resumen de AMBOS MODELOS con sjPlot
 tab_model(glm_2, glm_sp, show.est = TRUE , show.ci = FALSE, show.se = FALSE, show.p = TRUE, digits = 4)
 
 
