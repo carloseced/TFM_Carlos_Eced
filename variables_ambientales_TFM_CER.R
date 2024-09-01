@@ -555,27 +555,28 @@ print(tukey_table_rupicolas, type = "html", file = "tukey_results_rupicolas.html
 
 ###PLOTS LITOLOGIA
 
-##lmp2
+##glm2 Rupicolas totales
 
-summary(lmp_2_fin)
-##Para plotear, incluyo en el modelo GLM las variables ambientales que haya incluido en el lmp()
-glm_lito_lmp2 <- glm(Riqueza_GB ~ X1 + X2 + X6 + X7 + X13 +LITO_RECL3,
-                contrasts=list(LITO_RECL3=contr.sum),
-                data = data_filtered,
-                family = poisson(link = "log"),
+##Para plotear, incluyo en el modelo GLM las variables ambientales que haya incluido en el glm anterior
+glm_lito_2 <- glm(Riqueza_GB ~ X1 + X2 + X6 + X7 + X13 +LITO_RECL3,
+                  contrasts=list(LITO_RECL3=contr.sum),
+                  data = data_filtered,
+                  family = poisson(link = "log"),
 )
-summary(glm_lito_lmp2)
+summary(glm_lito_2)
 
 # Crear un boxplot para visualizar la distribución de Riqueza_GB por niveles de LITO_RECL3
-fit_glm_lito_lmp2<- fitted(glm_lito_lmp2, type = "response")
+fit_glm_lito_2<- fitted(glm_lito_2, type = "response")
 
-ggplot_glm_lito_lmp2 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit_glm_lito_lmp2)) +
+rm(ggplot_glm_lito_lmp2, ggplot_glm_lito_lmp2)
+
+ggplot_glm_lito_2 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit_glm_lito_2)) +
   geom_boxplot(outlier.shape = NA) +
   theme_classic() +
   coord_cartesian(clip = "on") +
   theme(
     legend.position = 'none',
-    axis.title.x = element_text(size = 15),
+    axis.title.x = element_text(size = 12),
     axis.title.y = element_text(size = 12, angle = 90, vjust = 1),  # Alinear verticalmente el texto del eje Y
     axis.text.x = element_text(size = 10.5, color = "#3E3E3E"), margin = margin(t = 5),
     axis.text.y = element_text(size = 12, color = "#3E3E3E"), margin = margin(r = 5),  # Separar los números del eje Y
@@ -588,30 +589,30 @@ ggplot_glm_lito_lmp2 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit
   ) +
   labs(x = "Litología", y = "Riqueza de plantas rupícolas totales")
 
-ggplot_glm_lito_lmp2
+ggplot_glm_lito_2
 
 
 
 
-###lmp4
-summary(lmp_4_fin)
-glm_lito_lmp4 <- glm(Riqueza_sp ~ X1 + X2 + X6 + X7+ X13 + X18 + LITO_RECL3,
-                     contrasts=list(LITO_RECL3=contr.sum),
-                     data = data_filtered,
-                     family = poisson(link = "log"),
+###glm4 Rupicolas especialistas
+
+glm_lito_4 <- glm(Riqueza_sp ~ X1 + X2 + X6 + X7+ X13 + X18 + LITO_RECL3,
+                  contrasts=list(LITO_RECL3=contr.sum),
+                  data = data_filtered,
+                  family = poisson(link = "log"),
 )
-summary(glm_lito_lmp4)
+summary(glm_lito_4)
 
 # Crear un boxplot para visualizar la distribución de Riqueza_sp por niveles de LITO_RECL3
-fit_glm_lito_lmp4<- fitted(glm_lito_lmp4, type = "response")
+fit_glm_lito_4<- fitted(glm_lito_4, type = "response")
 
-ggplot_glm_lito_lmp4 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit_glm_lito_lmp4)) +
+ggplot_glm_lito_4 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit_glm_lito_4)) +
   geom_boxplot(outlier.shape = NA) +
   theme_classic() +
   coord_cartesian(clip = "on") +
   theme(
     legend.position = 'none',
-    axis.title.x = element_text(size = 15),
+    axis.title.x = element_text(size = 12),
     axis.title.y = element_text(size = 12, angle = 90, vjust = 1),  # Alinear verticalmente el texto del eje Y
     axis.text.x = element_text(size = 10.5, color = "#3E3E3E"), margin = margin(t = 5),
     axis.text.y = element_text(size = 10.5, color = "#3E3E3E"), margin = margin(r = 5),  # Separar los números del eje Y
@@ -624,4 +625,4 @@ ggplot_glm_lito_lmp4 <- ggplot(data = data_filtered, aes(x = LITO_RECL3, y = fit
   ) +
   labs(x = "Litología", y = "Riqueza de plantas rupícolas especialistas")
 
-ggplot_glm_lito_lmp4
+ggplot_glm_lito_4
